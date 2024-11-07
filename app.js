@@ -1,5 +1,6 @@
 var createError = require("http-errors");
 var express = require("express");
+const cors = require("cors");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
@@ -10,6 +11,14 @@ var jadwal_kelasRouter = require("./routes/jadwal_kelas");
 var master_kelasRouter = require("./routes/master_kelas");
 
 var app = express();
+app.use(
+  cors({
+    origin: "/frontend_api",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
