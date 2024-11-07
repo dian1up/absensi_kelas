@@ -15,5 +15,40 @@ router.post("/make_data", async (req, res, next) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+router.post("/update_kelas", async (req, res, next) => {
+  const { id, nama_kelas } = req.body;
+  try {
+    const updatedKelas = await models.master_kelas.update(
+      { nama_kelas },
+      { where: { id } }
+    );
+    if (updatedKelas[0] === 1) {
+      const updatedData = await models.master_kelas.findByPk(id);
+      res.json(updatedData);
+    } else {
+      res.status(404).json({ error: "Kelas not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+router.delete("/delete_kelas", async (req, res, next) => {
+  const { id } = req.body;
+  try {
+    const deletedCount = await models.master_kelas.destroy({
+      where: { id },
+    });
+
+    if (deletedCount === 1) {
+      res.json({ message: "kelas deleted successfully" });
+    } else {
+      res.status(404).json({ error: "kelas not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 module.exports = router;
