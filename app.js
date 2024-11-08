@@ -9,11 +9,12 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var jadwal_kelasRouter = require("./routes/jadwal_kelas");
 var master_kelasRouter = require("./routes/master_kelas");
+var catatanRouter = require("./routes/catatan");
 
 var app = express();
 app.use(
   cors({
-    origin: "/frontend_api",
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -34,6 +35,7 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/jadwal_kelas", jadwal_kelasRouter);
 app.use("/master_kelas", master_kelasRouter);
+app.use("/catatan", catatanRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

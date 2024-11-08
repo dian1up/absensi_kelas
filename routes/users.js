@@ -43,7 +43,7 @@ router.post("/login", async (req, res) => {
     if (!passwordMatch) {
       return res.status(401).json({ error: "Authentication failed" });
     }
-    const token = jwt.sign({ userId: user.id }, "secret", { expireIn: "1y" });
+    const token = jwt.sign({ userId: user.id }, "secret");
     res.status(200).json({ token });
   } catch (error) {
     console.log(error);
@@ -61,7 +61,7 @@ router.get("/show_profile", jwtverify, async (req, res, next) => {
           attributes: ["nama_kelas"],
         },
       ],
-      attributes: ["nama", "username", "nisn", "nip", "kelas_id"],
+      attributes: ["nama", "username", "password", "nisn", "nip", "kelas_id"],
     });
 
     return res.status(200).json({ responseCode: 200, data: profile });
