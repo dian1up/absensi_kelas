@@ -3,7 +3,7 @@ var router = express.Router();
 const models = require("../models/index");
 const users = require("../models/users");
 const bcrypt = require("bcrypt");
-const jwtverify = require("../middleware/authMiddleware");
+const jwtverify = require("../middleware/authMiddlewareFix");
 const jwt = require("jsonwebtoken");
 const { Where } = require("sequelize/lib/utils");
 
@@ -33,8 +33,8 @@ router.post("/make_data", async (req, res, next) => {
 
 router.post("/login", async (req, res) => {
   try {
-    const { username, password } = req.body;
-    const user = await models.users.findOne({ where: { username } });
+    const { nama, password } = req.body;
+    const user = await models.users.findOne({ where: { nama } });
     console.log(user);
     if (!user) {
       return res.status(401).json({ error: "Authentication failed" });
@@ -61,7 +61,7 @@ router.get("/show_profile", jwtverify, async (req, res, next) => {
           attributes: ["nama_kelas"],
         },
       ],
-      attributes: ["nama", "username", "password", "nisn", "nip", "kelas_id"],
+      attributes: ["nama", "password", "nisn", "nip", "kelas_id"],
     });
 
     return res.status(200).json({ responseCode: 200, data: profile });
