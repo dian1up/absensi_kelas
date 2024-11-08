@@ -1,16 +1,23 @@
-const jwt = require("jsonwebtoken");
-function jwtverify(req, res, next) {
-  let token = req.header("Authorization");
-  if (!token) return res.status(401).json({ error: "Access denied" });
-  try {
-    token = token.split(" ")[1];
-    const decoded = jwt.verify(token, "secret");
-    req.userId = decoded.userId;
-    next();
-  } catch (error) {
-    console.log(error);
-    res.status(401).json({ error: "Invalid token" });
-  }
-}
+const jwt = require('jsonwebtoken');
 
-module.exports = jwtverify;
+// Middleware untuk memverifikasi token JWT
+const authenticateToken = (req, res, next) => {
+    const token = req.header('Authorization')?.split(' ')[1]; // Mengambil token dari header Authorization
+
+    if (!token) {
+        return res.status(401).json({ message: 'Access token not found' });
+    }
+
+    try {
+        const secretKey = process.env.JWT_SECRET || 'yourSecretKey'; // Pastikan gunakan secret key yang benar
+        const decoded = jwt.verify(token, secretKey); // Verifikasi token
+
+        // Simpan data user yang ter-decode dari token ke dalam request
+        req.user = decoded;
+        next(); // Lanjut ke middleware berikutnya
+    } catch (err) {
+        return res.status(403).json({ message: 'Invalid or expired token' });
+    }
+};
+
+module.exports = authenticateToken;
