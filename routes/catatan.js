@@ -2,14 +2,17 @@ var express = require("express");
 var router = express.Router();
 const models = require("../models/index");
 const catatan = require("../models/catatan");
+const KetuaKelasAuth = require("../middleware/KetuaKelasAuth");
 
-router.post("/make_catatan", async (req, res, next) => {
+router.post("/make_catatan", KetuaKelasAuth, async (req, res, next) => {
   console.log(req.body);
   try {
-    const { isi_catatan, kelas_id } = req.body;
+    const { isi_catatan, status } = req.body;
+    const kelas_id = req.kelas_id;
     const make_catatan = await models.catatan.create({
       isi_catatan,
       kelas_id,
+      status,
     });
     res.status(201).json({ data: make_catatan });
   } catch (error) {

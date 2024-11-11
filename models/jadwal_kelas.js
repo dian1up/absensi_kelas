@@ -18,6 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       nama_pelajaran: DataTypes.STRING,
       jam: DataTypes.TIME,
+      hari: DataTypes.STRING,
+      tanggal: DataTypes.DATE,
       materi: DataTypes.STRING,
       kelas_id: {
         type: DataTypes.INTEGER,

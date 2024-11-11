@@ -44,7 +44,7 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Authentication failed" });
     }
     const token = jwt.sign({ userId: user.id }, "secret");
-    res.status(200).json({ token });
+    res.status(200).json({ token, role: user.role });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Login failed" });
@@ -61,8 +61,41 @@ router.get("/show_profile", jwtverify, async (req, res, next) => {
           attributes: ["nama_kelas"],
         },
       ],
-      attributes: ["nama", "password", "nisn", "nip", "kelas_id"],
+      attributes: ["nama", "role", "nisn", "nip", "kelas_id"],
     });
+    const profileData = {
+      nama: profile.nama,
+      role: profile.role,
+      nisn: profile.nisn,
+      nip: profile.nip,
+      kelas: profile.kelas ? profile.kelas.nama_kelas : null,
+    };
+
+    return res.status(200).json({ responseCode: 200, data: profileData });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ responseCode: 400, message: error.message });
+  }
+});
+router.get("/showAll_profile", async (req, res, next) => {
+  try {
+    let profile = await models.users.findAll({
+      include: [
+        {
+          model: models.master_kelas,
+          as: "kelas",
+          attributes: ["nama_kelas"],
+        },
+      ],
+      attributes: ["nama", "role", "nisn", "nip", "kelas_id"],
+    });
+    const profileData = {
+      nama: profile.nama,
+      role: profile.role,
+      nisn: profile.nisn,
+      nip: profile.nip,
+      kelas: profile.kelas ? profile.kelas.nama_kelas : null,
+    };
 
     return res.status(200).json({ responseCode: 200, data: profile });
   } catch (error) {
