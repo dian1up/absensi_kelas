@@ -4,11 +4,23 @@ const cors = require("cors");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+const cors = require("cors");
+
+var app = express();
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var jadwal_kelasRouter = require("./routes/jadwal_kelas");
 var master_kelasRouter = require("./routes/master_kelas");
+var attendanceRouter = require('./routes/attendance');
 var catatanRouter = require("./routes/catatan");
 
 var app = express();
@@ -35,6 +47,7 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/jadwal_kelas", jadwal_kelasRouter);
 app.use("/master_kelas", master_kelasRouter);
+app.use('/attendance', attendanceRouter);
 app.use("/catatan", catatanRouter);
 
 // catch 404 and forward to error handler
