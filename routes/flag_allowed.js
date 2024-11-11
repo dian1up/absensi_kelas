@@ -8,14 +8,12 @@ router.patch("/update_open", async (req, res) => {
   const { date, allow_clockin } = req.body;
 
   try {
-    // Cari flag berdasarkan tanggal
     const flagRecord = await FlagAllowed.findOne({ where: { date } });
 
     if (!flagRecord) {
       return res.status(404).json({ message: "Flag for the specified date not found." });
     }
 
-    // Update status allow_clockin
     await flagRecord.update({ allow_clockin });
     res.status(200).json({ message: "Clock-in status updated successfully.", flagRecord });
   } catch (error) {
@@ -28,14 +26,12 @@ router.patch("/update_close", async (req, res) => {
   const { date, allow_clockout } = req.body;
 
   try {
-    // Cari flag berdasarkan tanggal
     const flagRecord = await FlagAllowed.findOne({ where: { date } });
 
     if (!flagRecord) {
       return res.status(404).json({ message: "Flag for the specified date not found." });
     }
 
-    // Update status allow_clockout
     await flagRecord.update({ allow_clockout });
     res.status(200).json({ message: "Clock-out status updated successfully.", flagRecord });
   } catch (error) {

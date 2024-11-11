@@ -98,47 +98,51 @@ router.post('/clockin', async (req, res) => {
 });
 
 
-
+ 
 router.post('/clockout', async (req, res) => {
-    try {
-        const { user_id, latitude, longitude, leave_note } = req.body;
+    const { latitude, longitude, leave_note } = req.body;
+    // const userId = 1;  // Hardcode userId untuk pengujian
+    const { userId } = req.body;
 
-        // Validasi jika `leave_note` diperlukan
-        if (!leave_note) {
-            return res.status(400).json({ message: "Leave note is required before clocking out" });
+    try {
+        if (!leave_note || leave_note.trim() === "") {
+            return res.status(400).json({ message: "Leave note is required to complete clock-out." });
         }
 
-        // Ambil tanggal hari ini (tanpa waktu)
-        const today = new Date().toISOString().slice(0, 10); // Format: "YYYY-MM-DD"
+        const today = new Date().toISOString().slice(0, 10);
 
-        // Cari record absensi berdasarkan `user_id` dan `tanggal` (hanya tanggal tanpa waktu)
-        const attendance = await models.attendance.findOne({ 
-            where: { 
-                user_id: user_id, 
-                tanggal: {
-                    [Op.like]: `${today}%`  // Menggunakan LIKE untuk mencocokkan tanggal saja
-                }
-            } 
+        const attendanceRecord = await models.attendance.findOne({
+            where: {
+                user_id: userId,
+                tanggal: { [Op.startsWith]: today }
+            }
         });
 
-        if (!attendance) {
-            return res.status(404).json({ message: "Clock-in record not found" });
+        if (!attendanceRecord) {
+            return res.status(404).json({ message: "No active clock-in record found for today." });
         }
 
-        // Update data clock-out dan leave note
-        attendance.clockout_date = new Date();
-        attendance.clockout_latitude = latitude;
-        attendance.clockout_longitude = longitude;
-        attendance.leave_note = leave_note;
-        await attendance.save();
+        if (attendanceRecord.clockout_date) {
+            return res.status(403).json({ message: "You have already clocked out for today." });
+        }
 
-        res.status(200).json({ message: "Clock-out successful", attendance });
+        attendanceRecord.update({
+            clockout_date: new Date(),
+            clockout_latitude: latitude,
+            clockout_longitude: longitude,
+            leave_note: leave_note
+        });
+
+        res.status(200).json({
+            message: "Clock-out has been successfully recorded.",
+            attendance: attendanceRecord
+        });
+        
     } catch (error) {
-        console.error(error); // Log error untuk debugging
-        res.status(500).json({ message: "Server error", error });
+        console.error("Clock-out error:", error);
+        res.status(500).json({ message: "Server error during clock-out", error });
     }
 });
-
 
 
 
