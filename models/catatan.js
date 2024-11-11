@@ -1,4 +1,3 @@
-
 "use strict";
 const { Model } = require("sequelize");
 
@@ -14,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
   catatan.init(
     {
       isi_catatan: DataTypes.TEXT,
+      status: {
+        type: DataTypes.ENUM,
+        values: ["hadir", "alpa", "ijin", "sakit"],
+        allowNull: true,
+      },
       kelas_id: {
         type: DataTypes.INTEGER,
         references: {
