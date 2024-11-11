@@ -19,10 +19,10 @@ router.post("/make_data", async (req, res, next) => {
   }
 });
 router.post("/update_jadwal", async (req, res, next) => {
-  const { id, nama_pelajaran, jam, kelas_id } = req.body;
+  const { id, nama_pelajaran, materi, hari, tanggal, jam, kelas_id } = req.body;
   try {
     const updatedJadwal = await models.jadwal_kelas.update(
-      { nama_pelajaran, jam, kelas_id },
+      { nama_pelajaran, jam, materi, hari, tanggal, kelas_id },
       { where: { id } }
     );
     if (updatedJadwal[0] === 1) {
