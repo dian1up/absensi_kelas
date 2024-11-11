@@ -1,5 +1,6 @@
 var createError = require("http-errors");
 var express = require("express");
+const cors = require("cors");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
@@ -20,8 +21,17 @@ var usersRouter = require("./routes/users");
 var jadwal_kelasRouter = require("./routes/jadwal_kelas");
 var master_kelasRouter = require("./routes/master_kelas");
 var attendanceRouter = require('./routes/attendance');
+var catatanRouter = require("./routes/catatan");
 
 var app = express();
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -38,6 +48,7 @@ app.use("/users", usersRouter);
 app.use("/jadwal_kelas", jadwal_kelasRouter);
 app.use("/master_kelas", master_kelasRouter);
 app.use('/attendance', attendanceRouter);
+app.use("/catatan", catatanRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
