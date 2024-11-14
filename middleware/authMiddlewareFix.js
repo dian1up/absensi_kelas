@@ -6,6 +6,7 @@ function jwtverify(req, res, next) {
     token = token.split(" ")[1];
     const decoded = jwt.verify(token, "secret");
     req.userId = decoded.userId;
+    req.kelas = decoded.kelas;
     next();
   } catch (error) {
     console.log(error);

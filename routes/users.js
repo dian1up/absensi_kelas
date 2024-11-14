@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const jwtverify = require("../middleware/authMiddlewareFix");
 const jwt = require("jsonwebtoken");
 const { Where } = require("sequelize/lib/utils");
+const KetuaKelasAuth = require("../middleware/KetuaKelasAuth");
 
 /* Make data */
 router.post("/make_data", async (req, res, next) => {
@@ -43,7 +44,10 @@ router.post("/login", async (req, res) => {
     if (!passwordMatch) {
       return res.status(401).json({ error: "Authentication failed" });
     }
-    const token = jwt.sign({ userId: user.id }, "secret");
+    const token = jwt.sign(
+      { userId: user.id, role: user.role, kelas: user.kelas_id },
+      "secret"
+    );
     res.status(200).json({ token, role: user.role });
   } catch (error) {
     console.log(error);
@@ -61,10 +65,11 @@ router.get("/show_profile", jwtverify, async (req, res, next) => {
           attributes: ["nama_kelas"],
         },
       ],
-      attributes: ["nama", "role", "nisn", "nip", "kelas_id"],
+      attributes: ["nama", "role", "nisn", "nip", "mapel", "kelas_id"],
     });
     const profileData = {
       nama: profile.nama,
+      mapel: profile.mapel,
       role: profile.role,
       nisn: profile.nisn,
       nip: profile.nip,
@@ -80,6 +85,10 @@ router.get("/show_profile", jwtverify, async (req, res, next) => {
 router.get("/showAll_profile", async (req, res, next) => {
   try {
     let profile = await models.users.findAll({
+      where: {
+        role: ["siswa", "ketua"],
+      },
+      order: [["nama", "ASC"]],
       include: [
         {
           model: models.master_kelas,
@@ -87,15 +96,8 @@ router.get("/showAll_profile", async (req, res, next) => {
           attributes: ["nama_kelas"],
         },
       ],
-      attributes: ["nama", "role", "nisn", "nip", "kelas_id"],
+      attributes: ["nama", "nisn", "kelas_id"],
     });
-    const profileData = {
-      nama: profile.nama,
-      role: profile.role,
-      nisn: profile.nisn,
-      nip: profile.nip,
-      kelas: profile.kelas ? profile.kelas.nama_kelas : null,
-    };
 
     return res.status(200).json({ responseCode: 200, data: profile });
   } catch (error) {
