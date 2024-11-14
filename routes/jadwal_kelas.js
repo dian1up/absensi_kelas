@@ -79,41 +79,35 @@ router.get("/show_jadwal", jwtverify, async (req, res, next) => {
         "kelas_id",
       ],
     });
+    const mappedData = jadwal.reduce((acc, item) => {
+      const hari = item.hariDetails.hari;
+      const jadwalItem = {
+        nama_pelajaran: item.nama_pelajaran,
+        jam: item.jam,
+        jam_selesai: item.jam_selesai,
+        materi: item.materi,
+        kelas: item.kelas ? item.kelas.nama_kelas : null,
+      };
 
-    return res.status(200).json({ responseCode: 200, data: jadwal });
+      if (acc[hari]) {
+        acc[hari].push(jadwalItem);
+      } else {
+        acc[hari] = [jadwalItem];
+      }
+      return acc;
+    }, {});
+
+    const result = Object.keys(mappedData).map((hari) => ({
+      hari,
+      jadwal: mappedData[hari],
+    }));
+
+    return res.status(200).json({ responseCode: 200, data: result });
   } catch (error) {
     console.log(error);
     return res.status(400).json({ responseCode: 400, message: error.message });
   }
 });
-
-// router.get("/show_jadwal", jwtverify, async (req, res, next) => {
-//   try {
-//     const kelasId = req.kelas;
-//     let jadwal = await models.hari.findAll({
-//       include: [
-//         {
-//           model: models.jadwal_kelas,
-//           as: "isijadwal",
-//           attributes: [
-//             "nama_pelajaran",
-//             "jam",
-//             "materi",
-//             "kelas_id",
-//             "jam_selesai",
-//           ],
-//           where: { kelas_id: kelasId },
-//         },
-//       ],
-//       attributes: ["hari", "jadwal"],
-//     });
-
-//     return res.status(200).json({ responseCode: 200, data: jadwal });
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(400).json({ responseCode: 400, message: error.message });
-//   }
-// });
 router.delete("/delete_jadwal", async (req, res, next) => {
   const { id } = req.body;
 
