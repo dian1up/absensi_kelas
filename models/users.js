@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       nama: DataTypes.STRING,
+      mapel: DataTypes.STRING,
       nisn: DataTypes.STRING,
       nip: DataTypes.STRING,
       password: DataTypes.STRING,

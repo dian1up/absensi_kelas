@@ -8,10 +8,10 @@ router.post("/make_catatan", KetuaKelasAuth, async (req, res, next) => {
   console.log(req.body);
   try {
     const { isi_catatan, status } = req.body;
-    const kelas_id = req.kelas_id;
+    const user_id = req.user_id;
     const make_catatan = await models.catatan.create({
       isi_catatan,
-      kelas_id,
+      user_id,
       status,
     });
     res.status(201).json({ data: make_catatan });
