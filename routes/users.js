@@ -43,8 +43,8 @@ router.post("/login", async (req, res) => {
     if (!passwordMatch) {
       return res.status(401).json({ error: "Authentication failed" });
     }
-    const token = jwt.sign({ userId: user.id }, "secret");
-    res.status(200).json({ token, role: user.role });
+    const token = jwt.sign({ userId: user.id ,kelas_id: user.kelas_id}, "secret");
+    res.status(200).json({ token, role: user.role,  });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Login failed" });
