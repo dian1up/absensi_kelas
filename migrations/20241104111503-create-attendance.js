@@ -30,9 +30,6 @@ module.exports = {
       is_leave: {
         type: Sequelize.BOOLEAN
       },
-      leave_note: {
-        type: Sequelize.STRING
-      },
       attachment: {
         type: Sequelize.STRING
       },

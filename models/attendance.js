@@ -10,11 +10,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      attendance.belongsTo(models.users, {
+        foreignKey: "userId",
+        as: "users",
+      });
     }
   }
   attendance.init({
-    user_id: DataTypes.INTEGER,
+    userId: {type: DataTypes.INTEGER, references:{model:"users", key:"id"}},
     tanggal: DataTypes.DATE,
     clockin_date: DataTypes.DATE,
     clockin_latitude: DataTypes.DOUBLE,
@@ -22,8 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     clockout_date: DataTypes.DATE,
     clockout_latitude: DataTypes.DOUBLE,
     clockout_longitude: DataTypes.DOUBLE,
-    is_leave: DataTypes.BOOLEAN,
-    leave_note: DataTypes.STRING,
+    is_leave: DataTypes.TINYINT,
     attachment: DataTypes.STRING
   }, {
     sequelize,
