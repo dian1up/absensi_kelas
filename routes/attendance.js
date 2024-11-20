@@ -1,14 +1,15 @@
 // routes/attendance.js
 var express = require("express");
 var router = express.Router();
-const  models = require('../models/index');
+const models = require("../models/index");
 const attendance = require("../models/attendance");
 const jwtverify = require("../middleware/authMiddlewareFix");
 const FlagAllowed = require("../models/flag_allowed");
-const KetuaKelasAuth = require ("../middleware/KetuaKelasAuth")
-// const users  = require('../models/users');
+const KetuaKelasAuth = require("../middleware/KetuaKelasAuth");
+// const { User } = require('../models');
 const moment = require("moment");
-const { Op, where } = require('sequelize');
+// const checkGeolocation = require("../middleware/geolocationMiddleware");
+const { Op } = require("sequelize");
 
 // Endpoint untuk ketua kelas mengaktifkan absensi
 router.post("/activate", jwtverify, KetuaKelasAuth, async (req, res) => {
@@ -24,12 +25,15 @@ router.post("/activate", jwtverify, KetuaKelasAuth, async (req, res) => {
       allow_clockout: allowClockout,
     });
 
-    res.status(200).json({ message: "Attendance status updated successfully." });
+    res
+      .status(200)
+      .json({ message: "Attendance status updated successfully." });
   } catch (error) {
-    res.status(500).json({ message: "Failed to update attendance status.", error });
+    res
+      .status(500)
+      .json({ message: "Failed to update attendance status.", error });
   }
 });
-
 
 // Endpoint untuk clockin
 router.post('/clockin', jwtverify, async (req, res) => {
@@ -150,7 +154,6 @@ router.get('/rekap_absensi', jwtverify, async (req, res) => {
       res.status(500).json({ message: "Failed to fetch rekap pulang", error });
     }
   });
-  
   
 
 module.exports = router;

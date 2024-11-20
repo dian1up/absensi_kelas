@@ -12,13 +12,25 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "kelas_id",
         as: "kelas",
       });
+      jadwal_kelas.belongsTo(models.hari, {
+        foreignKey: "hari",
+        as: "hariDetails",
+      });
     }
   }
+
   jadwal_kelas.init(
     {
       nama_pelajaran: DataTypes.STRING,
       jam: DataTypes.TIME,
-      hari: DataTypes.STRING,
+      jam_selesai: DataTypes.TIME,
+      hari: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "hari",
+          key: "id",
+        },
+      },
       tanggal: DataTypes.DATE,
       materi: DataTypes.STRING,
       kelas_id: {
@@ -34,5 +46,6 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "jadwal_kelas",
     }
   );
+
   return jadwal_kelas;
 };

@@ -10,7 +10,7 @@ function jwtverify(req, res, next) {
       return res.status(400).json({ error: "kelas_id is missing from the token" });
     }
     req.userId = decoded.userId;
-    req.kelas_id=decoded.kelas_id;
+    req.kelas = decoded.kelas;
     next();
   } catch (error) {
     console.log(error);
