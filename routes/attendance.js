@@ -118,7 +118,7 @@ router.post('/clockout', jwtverify, async (req, res) => {
 
 router.get('/rekap_absensi', jwtverify, async (req, res) => {
     try {
-      const kelas_id = req.kelas_id;
+      const kelas_id = req.kelas;
     // const tanggal = req.body;
   
       // // Validasi parameter
