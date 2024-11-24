@@ -8,15 +8,21 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "kelas_id",
         as: "kelas",
       });
+      catatan.belongsTo(models.users, {
+        foreignKey: "user_id",
+        as: "users",
+      });
     }
   }
   catatan.init(
     {
       isi_catatan: DataTypes.TEXT,
-      status: {
-        type: DataTypes.ENUM,
-        values: ["hadir", "alpa", "ijin", "sakit"],
-        allowNull: true,
+      user_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "users",
+          key: "id",
+        },
       },
       kelas_id: {
         type: DataTypes.INTEGER,
@@ -24,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
           model: "master_kelas",
           key: "id",
         },
+      },
+      tanggal: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
       },
     },
     {

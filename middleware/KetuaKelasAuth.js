@@ -14,7 +14,8 @@ function KetuaKelasAuth(req, res, next) {
         .status(403)
         .json({ error: "Access forbidden: role ketua required" });
     }
-    req.user_id = decoded.user_id;
+    req.userId = decoded.userId;
+    req.kelas = decoded.kelas;
     next();
   } catch (err) {
     console.error("JWT verification error:", err);

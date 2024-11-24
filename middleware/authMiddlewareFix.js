@@ -6,8 +6,10 @@ function jwtverify(req, res, next) {
     token = token.split(" ")[1];
     const decoded = jwt.verify(token, "secret");
     console.log("Decoded JWT Payload:", decoded); // Pastikan userId ada di sini
-    if (!decoded.kelas_id) {
-      return res.status(400).json({ error: "kelas_id is missing from the token" });
+    if (!decoded.kelas) {
+      return res
+        .status(400)
+        .json({ error: "kelas_id is missing from the token" });
     }
     req.userId = decoded.userId;
     req.kelas = decoded.kelas;
