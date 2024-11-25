@@ -6,7 +6,6 @@ const bcrypt = require("bcrypt");
 const jwtverify = require("../middleware/authMiddlewareFix");
 const jwt = require("jsonwebtoken");
 const { Where } = require("sequelize/lib/utils");
-const KetuaKelasAuth = require("../middleware/KetuaKelasAuth");
 
 /* Make data */
 router.post("/make_data", async (req, res, next) => {
@@ -48,7 +47,7 @@ router.post("/login", async (req, res) => {
       { userId: user.id, role: user.role, kelas: user.kelas_id },
       "secret"
     );
-    res.status(200).json({ token, role: user.role });
+    res.status(200).json({ token, role: user.role, kelas: user.kelas_id });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Login failed" });
