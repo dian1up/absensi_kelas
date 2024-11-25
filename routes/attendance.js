@@ -4,36 +4,36 @@ var router = express.Router();
 const models = require("../models/index");
 const attendance = require("../models/attendance");
 const jwtverify = require("../middleware/authMiddlewareFix");
-const FlagAllowed = require("../models/flag_allowed");
+const flag_allowed = require("../models/flag_allowed");
 const KetuaKelasAuth = require("../middleware/KetuaKelasAuth");
 // const { User } = require('../models');
 const moment = require("moment");
 // const checkGeolocation = require("../middleware/geolocationMiddleware");
 const { Op, where } = require("sequelize");
 
-// Endpoint untuk ketua kelas mengaktifkan absensi
-router.post("/activate", jwtverify, KetuaKelasAuth, async (req, res) => {
-  try {
-    const { kelas_id, allowClockin, allowClockout } = req.body;
-    const todayDate = moment().format("YYYY-MM-DD");
+// // Endpoint untuk ketua kelas mengaktifkan absensi
+// router.post("/activate", jwtverify, KetuaKelasAuth, async (req, res) => {
+//   try {
+//     const { kelas_id, allowClockin, allowClockout } = req.body;
+//     const todayDate = moment().format("YYYY-MM-DD");
 
-    // Update izin absensi di tabel flag_allowed berdasarkan kelas dan tanggal
-    await FlagAllowed.upsert({
-      kelas_id: kelas_id,
-      date: todayDate,
-      allow_clockin: allowClockin,
-      allow_clockout: allowClockout,
-    });
+//     // Update izin absensi di tabel flag_allowed berdasarkan kelas dan tanggal
+//     await models.flag_allowed.upsert({
+//       kelas_id: kelas_id,
+//       date: todayDate,
+//       allow_clockin: allowClockin,
+//       allow_clockout: allowClockout,
+//     });
 
-    res
-      .status(200)
-      .json({ message: "Attendance status updated successfully." });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Failed to update attendance status.", error });
-  }
-});
+//     res
+//       .status(200)
+//       .json({ message: "Attendance status updated successfully." });
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ message: "Failed to update attendance status.", error });
+//   }
+// });
 
 // Endpoint untuk clockin
 router.post("/clockin", jwtverify, async (req, res) => {
@@ -193,6 +193,42 @@ router.get("/rekap_absensi", jwtverify, async (req, res) => {
   } catch (error) {
     console.error("Error fetching rekap pulang:", error);
     res.status(500).json({ message: "Failed to fetch rekap pulang", error });
+  }
+});
+
+router.get("/check-status", jwtverify, async (req, res) => {
+  try {
+    const kelas_id = req.kelas;
+    const todayDate = moment().format("YYYY-MM-DD");
+
+    // Ambil data flag_allowed berdasarkan kelas_id dan tanggal hari ini
+    const status = await models.flag_allowed.findOne({
+      where: {
+        kelas_id: kelas_id,
+        date: {
+          [Op.between]: [`${todayDate} 00:00:00`, `${todayDate} 23:59:59`],
+        },
+      },
+    });
+
+    // Jika tidak ada data status untuk hari ini, beri respons default
+    // if (!status) {
+    //   return res.status(200).json({
+    //     allowClockin: false,
+    //     allowClockout: false,
+    //   });
+    // }
+
+    // Kirimkan status allowClockin dan allowClockout
+    res.status(200).json({
+      allowClockin: status.allow_clockin,
+      allowClockout: status.allow_clockout,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch attendance status.",
+      error,
+    });
   }
 });
 

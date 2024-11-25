@@ -9,10 +9,10 @@ function KetuaKelasAuth(req, res, next) {
     token = token.split(" ")[1];
     const decoded = jwt.verify(token, "secret");
     console.log(decoded);
-    if (!["ketua", "siswa"].includes(decoded.role)) {
+    if (!["ketua", "guru"].includes(decoded.role)) {
       return res
         .status(403)
-        .json({ error: "Access forbidden: role ketua required" });
+        .json({ error: "Access forbidden: role ketua or guru required" });
     }
     req.userId = decoded.userId;
     req.kelas = decoded.kelas;

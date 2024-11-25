@@ -28,6 +28,7 @@ router.post("/clokin_open", jwtverify, async (req, res) => {
   }
 });
 
+
 // Endpoint untuk memperbarui status tutup (allow_clockout)
 router.post("/update_close", jwtverify, async (req, res) => {
   const { allow_clockout } = req.body;

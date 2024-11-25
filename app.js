@@ -49,7 +49,8 @@ app.use("/jadwal_kelas", jadwal_kelasRouter);
 app.use("/master_kelas", master_kelasRouter);
 app.use("/attendance", attendanceRouter);
 app.use("/catatan", catatanRouter);
-app.use("/flag_alowed", flag_allowedRouter);
+app.use("/flag_allowed", flag_allowedRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
