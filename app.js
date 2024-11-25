@@ -21,6 +21,7 @@ var jadwal_kelasRouter = require("./routes/jadwal_kelas");
 var master_kelasRouter = require("./routes/master_kelas");
 var attendanceRouter = require("./routes/attendance");
 var catatanRouter = require("./routes/catatan");
+var flag_allowedRouter = require("./routes/flag_allowed");
 
 var app = express();
 app.use(
@@ -48,6 +49,7 @@ app.use("/jadwal_kelas", jadwal_kelasRouter);
 app.use("/master_kelas", master_kelasRouter);
 app.use("/attendance", attendanceRouter);
 app.use("/catatan", catatanRouter);
+app.use("/flag_allowed", flag_allowedRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

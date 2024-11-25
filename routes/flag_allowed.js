@@ -1,32 +1,37 @@
 // routes/flagAllowed.js
 const express = require("express");
 const router = express.Router();
-const FlagAllowed = require("../models/flag_allowed");
+const flag_allowed = require("../models/flag_allowed");
+const models = require("../models/index");
+const jwtverify = require("../middleware/authMiddlewareFix");
 
-// Endpoint untuk memperbarui status buka (allow_clockin)
-router.patch("/update_open", async (req, res) => {
-  const { date, allow_clockin } = req.body;
+router.post("/update_open",jwtverify, async (req, res) => {
+  const { allow_clockin } = req.body;
 
   try {
-    const flagRecord = await FlagAllowed.findOne({ where: { date } });
+    const flagRecord = await models.flag_allowed.create({ 
+      date: date, 
+      allow_clockin: allow_clockin
+    });
 
     if (!flagRecord) {
-      return res.status(404).json({ message: "Flag for the specified date not found." });
+      return res.status(404).json({ message: "Flag for the specified date not created." });
     }
 
-    await flagRecord.update({ allow_clockin });
-    res.status(200).json({ message: "Clock-in status updated successfully.", flagRecord });
+    res.status(200).json({ message: "Clock-in status added successfully.", flagRecord });
   } catch (error) {
-    res.status(500).json({ message: "Failed to update clock-in status.", error });
+    console.log(error);
+    res.status(500).json({ message: "Failed to add clock-in status.", error });
   }
 });
+
 
 // Endpoint untuk memperbarui status tutup (allow_clockout)
 router.patch("/update_close", async (req, res) => {
   const { date, allow_clockout } = req.body;
 
   try {
-    const flagRecord = await FlagAllowed.findOne({ where: { date } });
+    const flagRecord = await flag_allowed.findOne({ where: { date } });
 
     if (!flagRecord) {
       return res.status(404).json({ message: "Flag for the specified date not found." });
